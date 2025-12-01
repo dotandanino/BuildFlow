@@ -1,4 +1,4 @@
-package com.example.buildflow2;
+package com.example.buildflow;
 
 import android.os.Bundle;
 

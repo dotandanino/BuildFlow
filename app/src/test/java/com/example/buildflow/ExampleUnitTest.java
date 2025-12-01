@@ -1,4 +1,4 @@
-package com.example.buildflow2;
+package com.example.buildflow;
 
 import org.junit.Test;
 

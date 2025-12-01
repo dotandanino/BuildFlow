@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.buildflow2"
+    namespace = "com.example.buildflow"
     compileSdk {
         version = release(36)
     }
