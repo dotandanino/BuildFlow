@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BuildFlow2">
         <activity
-            android:name=".MainActivity"
+            android:name=".ChooseProjectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
