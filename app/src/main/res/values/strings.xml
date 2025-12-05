@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BuildFlow2</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
 </resources>
