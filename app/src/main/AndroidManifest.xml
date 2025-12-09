@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BuildFlow2">
         <activity
+            android:name=".HomePageActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChooseProjectActivity"
             android:exported="false" />
         <activity

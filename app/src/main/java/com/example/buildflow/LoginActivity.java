@@ -19,6 +19,8 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 public class LoginActivity extends AppCompatActivity {
     @Override
@@ -46,27 +48,22 @@ public class LoginActivity extends AppCompatActivity {
         });
         findViewById(R.id.signUpWithGoogleButton).setOnClickListener(v -> googleSignIn());
         findViewById(R.id.signUpButton).setOnClickListener(v -> registerUser(
-                ((android.widget.EditText) findViewById(R.id.nameText)).getText().toString(), ((android.widget.EditText) findViewById(R.id.pass)).getText().toString()));
-        findViewById(R.id.loginButton).setOnClickListener(v -> loginUser(((android.widget.EditText) findViewById(R.id.nameText)).getText().toString(), ((android.widget.EditText) findViewById(R.id.pass)).getText().toString()));
+                ((android.widget.EditText) findViewById(R.id.emailTextView)).getText().toString(), ((android.widget.EditText) findViewById(R.id.passwordTextView)).getText().toString()));
+        findViewById(R.id.loginButton).setOnClickListener(v -> loginUser(((android.widget.EditText) findViewById(R.id.emailTextView)).getText().toString(), ((android.widget.EditText) findViewById(R.id.passwordTextView)).getText().toString()));
     }
     private void registerUser(String email, String password) {
-        // בדיקה שהשדות לא ריקים
-        if (email.isEmpty() || password.isEmpty()) {
-            android.widget.Toast.makeText(this, "נא למלא מייל וסיסמה", android.widget.Toast.LENGTH_SHORT).show();
+        if (email.isEmpty() || password.isEmpty() || ((android.widget.EditText) findViewById(R.id.nameTextView)).getText().toString().isEmpty()) {
+            android.widget.Toast.makeText(this, "נא למלא מייל שם וסיסמה", android.widget.Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // הפקודה שיוצרת משתמש חדש
         com.google.firebase.auth.FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // הצלחה: המשתמש נוצר
-                        android.widget.Toast.makeText(LoginActivity.this, "נרשמת בהצלחה!", android.widget.Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, ChooseProjectActivity.class);
-                        startActivity(intent);
-                        finish();
+                        FirebaseUser user = task.getResult().getUser();
+                        assert user != null;
+                        saveUserToFirestore(user);
                     } else {
-                        // כישלון: למשל המייל כבר קיים או הסיסמה חלשה
                         android.widget.Toast.makeText(LoginActivity.this, "הרשמה נכשלה: " + task.getException().getMessage(), android.widget.Toast.LENGTH_LONG).show();
                     }
                 });
@@ -103,11 +100,10 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // התחברות הצליחה
-                        android.widget.Toast.makeText(LoginActivity.this, "התחברת בהצלחה!", android.widget.Toast.LENGTH_SHORT).show();
+                        FirebaseUser user = task.getResult().getUser();
+                        assert user != null;
+                        saveUserToFirestore(user);
                         Log.d("Auth", "User signed in: " + com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                        Intent intent = new Intent(LoginActivity.this, ChooseProjectActivity.class);
-                        startActivity(intent);
-                        finish();
                     } else {
                         // התחברות נכשלה
                         android.widget.Toast.makeText(LoginActivity.this, "החיבור נכשל.", android.widget.Toast.LENGTH_SHORT).show();
@@ -161,4 +157,25 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
+    // פונקציה לשמירת המשתמש במסד הנתונים
+    private void saveUserToFirestore(FirebaseUser firebaseUser) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String name = ((android.widget.EditText) findViewById(R.id.nameTextView)).getText().toString();
+        User user = new User(firebaseUser.getUid(), firebaseUser.getEmail(), name);
+
+        // save in the collection user with uid as key
+        //using merge to make sure we will not overwrite the user if he already exists
+        db.collection("users").document(user.getUid())
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    // move to the next activity
+                    android.widget.Toast.makeText(LoginActivity.this, "התחברת בהצלחה!", android.widget.Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, ChooseProjectActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    android.widget.Toast.makeText(LoginActivity.this, "שגיאה בשמירת נתונים: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+                });
+    }
 }
