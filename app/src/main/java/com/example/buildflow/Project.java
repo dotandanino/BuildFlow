@@ -1,25 +1,32 @@
 package com.example.buildflow;
 
+import java.util.List;
+
 public class Project {
     private String id;
     private String name;
+    private String description;
     private String type;
     private String startDate;
     private int progress;
     private int membersCount;
     private String status;
+    private List<String> members;
+
 
     // Empty constructor required for Firestore
     public Project() {
     }
 
-    public Project(String name, String type, String startDate, int progress, int membersCount, String status) {
+    public Project(String name, String type, String startDate, int progress, int membersCount, String status,String description,List<String> members) {
         this.name = name;
         this.type = type;
         this.startDate = startDate;
         this.progress = progress;
         this.membersCount = membersCount;
         this.status = status;
+        this.description = description;
+        this.members = members;
     }
 
     public String getId() { return id; }

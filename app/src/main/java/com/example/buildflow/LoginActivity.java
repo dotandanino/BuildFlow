@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.signUpButton).setOnClickListener(v -> registerUser(
                 ((android.widget.EditText) findViewById(R.id.emailTextView)).getText().toString(), ((android.widget.EditText) findViewById(R.id.passwordTextView)).getText().toString()));
         findViewById(R.id.loginButton).setOnClickListener(v -> loginUser(((android.widget.EditText) findViewById(R.id.emailTextView)).getText().toString(), ((android.widget.EditText) findViewById(R.id.passwordTextView)).getText().toString()));
+
     }
     private void registerUser(String email, String password) {
         if (email.isEmpty() || password.isEmpty() || ((android.widget.EditText) findViewById(R.id.nameTextView)).getText().toString().isEmpty()) {
