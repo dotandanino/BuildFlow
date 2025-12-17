@@ -1,6 +1,9 @@
-package com.example.buildflow;
+package com.example.buildflow.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Project {
     private String id;
@@ -11,14 +14,16 @@ public class Project {
     private int progress;
     private int membersCount;
     private String status;
-    private List<String> members;
+    private List<String> participants;
+    private Map<User, String> roles;
 
 
     // Empty constructor required for Firestore
     public Project() {
     }
 
-    public Project(String name, String type, String startDate, int progress, int membersCount, String status,String description,List<String> members) {
+    public Project(String ID,String name, String type, String startDate, int progress, int membersCount, String status,String description) {
+        this.id = ID;
         this.name = name;
         this.type = type;
         this.startDate = startDate;
@@ -26,7 +31,40 @@ public class Project {
         this.membersCount = membersCount;
         this.status = status;
         this.description = description;
-        this.members = members;
+        this.participants = new ArrayList<>();
+        this.roles = new HashMap<>();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<String> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public Map<User, String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Map<User, String> roles) {
+        this.roles = roles;
+    }
+
+    public void addPartner(User user, String role) {
+        if (!this.participants.contains(user.getUid())) {
+            this.participants.add(user.getUid());
+            membersCount++;
+        }
+        this.roles.put(user, role);
     }
 
     public String getId() { return id; }
@@ -49,4 +87,7 @@ public class Project {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getRole(String userId){
+        return roles.get(userId);
+    }
 }

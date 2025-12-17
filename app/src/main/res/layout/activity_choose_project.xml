@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5"
     android:layoutDirection="ltr"
-    tools:context=".ChooseProjectActivity">
+    tools:context=".view.activities.ChooseProjectActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
@@ -127,6 +127,7 @@
                     android:layout_marginTop="12dp"
                     android:background="@drawable/bg_dashed_border"
                     android:gravity="center"
+                    android:id="@+id/joinProject"
                     android:orientation="vertical"
                     android:padding="24dp">
 

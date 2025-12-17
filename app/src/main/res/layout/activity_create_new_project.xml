@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/main"
+    android:layoutDirection="ltr"
     android:layout_height="match_parent"
     android:background="@color/app_background"
     android:fillViewport="true">
@@ -17,10 +18,21 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/headerLayout"
             android:background="@drawable/bg_header_gradient"
             android:padding="24dp">
 
 
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imgLogo"
@@ -28,8 +40,8 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="12dp"
                 android:src="@mipmap/logo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="@id/btnBack" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -42,7 +54,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Choose Project Type"
+                    android:id="@+id/tvPageTitle"
+                    android:text="New Renovation Project"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -51,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.9"
-                    android:text="Select what best fits your needs"
+                    android:text="Enter project details"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
             </LinearLayout>

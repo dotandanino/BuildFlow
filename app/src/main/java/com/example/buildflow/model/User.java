@@ -1,4 +1,4 @@
-package com.example.buildflow;
+package com.example.buildflow.model;
 
 public class User {
     private String uid;

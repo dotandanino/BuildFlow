@@ -12,19 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BuildFlow2">
         <activity
-            android:name=".addProjectActivity"
+            android:name=".view.activities.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateNewProjectActivity"
+            android:name=".view.activities.JoinProjectActivity"
             android:exported="false" />
         <activity
-            android:name=".HomePageActivity"
+            android:name=".view.activities.AddProjectActivity"
             android:exported="false" />
         <activity
-            android:name=".ChooseProjectActivity"
+            android:name=".view.activities.CreateNewProjectActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.activities.ProjectViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.ChooseProjectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

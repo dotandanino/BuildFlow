@@ -2,4 +2,22 @@
     <string name="app_name">BuildFlow2</string>
     <string name="password">password</string>
     <string name="login">Login</string>
+    <string-array name="project_statuses">
+        <item>Pending</item>
+        <item>In Progress</item>
+        <item>Completed</item>
+        <item>On Hold</item>
+    </string-array>
+
+    <string-array name="project_role">
+        <item>Other</item>
+        <item>Owner</item>
+        <item>Contractor</item>
+        <item>Supervisor</item>
+        <item>Electrician</item>
+        <item>Architect</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.buildflow;
+package com.example.buildflow.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 
+import com.example.buildflow.R;
+import com.example.buildflow.model.User;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,28 +49,33 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
         findViewById(R.id.signUpWithGoogleButton).setOnClickListener(v -> googleSignIn());
-        findViewById(R.id.signUpButton).setOnClickListener(v -> registerUser(
-                ((android.widget.EditText) findViewById(R.id.emailTextView)).getText().toString(), ((android.widget.EditText) findViewById(R.id.passwordTextView)).getText().toString()));
+        findViewById(R.id.signUpButton).setOnClickListener(v -> registerUser());
         findViewById(R.id.loginButton).setOnClickListener(v -> loginUser(((android.widget.EditText) findViewById(R.id.emailTextView)).getText().toString(), ((android.widget.EditText) findViewById(R.id.passwordTextView)).getText().toString()));
 
     }
-    private void registerUser(String email, String password) {
-        if (email.isEmpty() || password.isEmpty() || ((android.widget.EditText) findViewById(R.id.nameTextView)).getText().toString().isEmpty()) {
-            android.widget.Toast.makeText(this, "נא למלא מייל שם וסיסמה", android.widget.Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        com.google.firebase.auth.FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = task.getResult().getUser();
-                        assert user != null;
-                        saveUserToFirestore(user);
-                    } else {
-                        android.widget.Toast.makeText(LoginActivity.this, "הרשמה נכשלה: " + task.getException().getMessage(), android.widget.Toast.LENGTH_LONG).show();
-                    }
-                });
+    private void registerUser() {
+        Intent intent=new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+        finish();
     }
+//    private void registerUser(String email, String password) {
+//        if (email.isEmpty() || password.isEmpty() || ((android.widget.EditText) findViewById(R.id.nameTextView)).getText().toString().isEmpty()) {
+//            android.widget.Toast.makeText(this, "נא למלא מייל שם וסיסמה", android.widget.Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        com.google.firebase.auth.FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener(this, task -> {
+//                    if (task.isSuccessful()) {
+//                        FirebaseUser user = task.getResult().getUser();
+//                        assert user != null;
+//                        saveUserToFirestore(user);
+//                    } else {
+//                        android.widget.Toast.makeText(LoginActivity.this, "הרשמה נכשלה: " + task.getException().getMessage(), android.widget.Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//    }
 
     private void loginUser(String email, String password) {
         // בדיקה שהשדות לא ריקים
@@ -179,4 +186,5 @@ public class LoginActivity extends AppCompatActivity {
                     android.widget.Toast.makeText(LoginActivity.this, "שגיאה בשמירת נתונים: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
                 });
     }
+
 }
