@@ -191,7 +191,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/signUpWithGoogleButton"
+                    android:id="@+id/signInWithGoogleButton"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/bg_google_signin"

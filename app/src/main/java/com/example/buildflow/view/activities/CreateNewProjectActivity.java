@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.buildflow.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class CreateNewProjectActivity extends AppCompatActivity {
 
@@ -31,13 +32,10 @@ public class CreateNewProjectActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
+        // if the user is not connected we want to send him for the login screen
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
-
-            //the flags are to make sure he will have no option to come back to this activity with the back button of the phone
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
             startActivity(intent);
             finish();
         }

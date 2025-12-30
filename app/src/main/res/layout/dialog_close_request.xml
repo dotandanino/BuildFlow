@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_input_field"> <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Complete Task"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:textColor="#000000"
+    android:gravity="center"
+    android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How was the issue resolved?"
+        android:textSize="14sp"
+        android:textColor="#757575"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etResolution"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Describe the fix (e.g., Replaced the pipe, sealed the leak...)"
+        android:background="@android:drawable/edit_text"
+        android:minLines="3"
+        android:gravity="top|start"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnAddClosingPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Photo of Fix (Optional)"
+        android:backgroundTint="#EEEEEE"
+        android:textColor="#000000"
+        android:drawableLeft="@android:drawable/ic_menu_camera"
+        android:layout_marginBottom="12dp"/>
+
+    <ImageView
+        android:id="@+id/ivClosingPreview"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp"
+        android:background="#F0F0F0"/>
+
+    <Button
+        android:id="@+id/btnConfirmClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mark as Done &amp; Close"
+        android:backgroundTint="@color/orange"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"/>
+
+</LinearLayout>
