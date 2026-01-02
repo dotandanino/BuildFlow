@@ -43,6 +43,7 @@ public class ChooseProjectActivity extends AppCompatActivity {
         findViewById(R.id.btnAddProject).setOnClickListener(v -> startActivity(new Intent(this, CreateNewProjectActivity.class)));
 
         db = FirebaseFirestore.getInstance();
+        // to hold the project list in the view
         projectsRecyclerView = findViewById(R.id.projectsRecyclerView);
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -55,7 +56,7 @@ public class ChooseProjectActivity extends AppCompatActivity {
                 intent.putExtra("PROJECT_NAME", project.getName());
                 intent.putExtra("PROJECT_TYPE", project.getType());
                 intent.putExtra("ROLE", project.getRole(FirebaseAuth.getInstance().getCurrentUser().getUid()));
-
+                // info we need for the next screen
                 startActivity(intent);
             }
         });
@@ -64,7 +65,7 @@ public class ChooseProjectActivity extends AppCompatActivity {
 
         findViewById(R.id.joinProject).setOnClickListener(v -> startActivity(new Intent(this, JoinProjectActivity.class)));
 
-
+        // we ask for notification permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
@@ -94,7 +95,7 @@ public class ChooseProjectActivity extends AppCompatActivity {
         String userId = currentUser.getUid();
         // searching for projects that the user is a participant
         db.collection("projects")
-                .whereArrayContains("participants", userId)
+                .whereArrayContains("participants", userId)// take all the project that the user is in
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -114,17 +115,15 @@ public class ChooseProjectActivity extends AppCompatActivity {
                             }
                         }
 
-                        // עדכון ה-Adapter עם הרשימה החדשה
+                        // updating the adapter with the new data
                         adapter.updateData(loadedProjects);
 
                     } else {
-                        // המשתמש לא נמצא באף פרויקט כרגע
-                        // אפשר להציג הודעה או להשאיר ריק
-//                         Toast.makeText(this, "No projects found.", Toast.LENGTH_SHORT).show();
+                        // no projects found
+                        // right now he just don't see any projects
                     }
                 })
                 .addOnFailureListener(e -> {
-//                    Log.e("ChooseProject", "Error loading projects", e);
                     Toast.makeText(this, "Failed to load projects.", Toast.LENGTH_SHORT).show();
                 });
     }

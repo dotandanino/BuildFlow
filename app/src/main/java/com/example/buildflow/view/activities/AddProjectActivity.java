@@ -134,7 +134,7 @@ public class AddProjectActivity extends AppCompatActivity {
         String projectName = ((EditText) findViewById(R.id.etProjectName)).getText().toString();
         String startDate = ((EditText) findViewById(R.id.etStartDate)).getText().toString();
         String selectedStatus = spinnerStatus.getSelectedItem().toString();
-
+        //make sure The user enter name, Date all the other items either have default values or not required
         if (projectName.isEmpty() || startDate.isEmpty()) {
             Toast.makeText(this, "You must enter project name and start date", Toast.LENGTH_SHORT).show();
             return;

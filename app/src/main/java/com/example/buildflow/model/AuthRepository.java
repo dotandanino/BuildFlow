@@ -9,9 +9,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 public class AuthRepository {
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private MutableLiveData<FirebaseUser> userLiveData;
+    private FirebaseAuth mAuth; // handle authentication
+    private FirebaseFirestore db; // Connection to Firestore database
+    private MutableLiveData<FirebaseUser> userLiveData; // Observes current user state (LoggedIn / Null)
 
     public AuthRepository() {
         this.mAuth = FirebaseAuth.getInstance();
@@ -23,12 +23,16 @@ public class AuthRepository {
         return userLiveData;
     }
 
-    // --- התחברות רגילה ---
+    /**
+     * Login with email and password
+     * @param email - email
+     * @param password -password
+     */
     public void login(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        updateFcmToken(); // <--- הוספנו את זה!
+                        updateFcmToken(); // make the notification available
                         userLiveData.postValue(mAuth.getCurrentUser());
                     } else {
                         userLiveData.postValue(null);
@@ -36,15 +40,17 @@ public class AuthRepository {
                 });
     }
 
-    // --- התחברות גוגל (Login) ---
+    /**
+     * Login with Google
+     * @param idToken - the google token for login
+     */
     public void loginWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        updateFcmToken(); // <--- הוספנו את זה!
+                        updateFcmToken(); // make the notification available
                         FirebaseUser user = mAuth.getCurrentUser();
-                        // כאן אפשר להוסיף בדיקה אם המשתמש קיים ב-DB
                         userLiveData.postValue(user);
                     } else {
                         userLiveData.postValue(null);
@@ -52,24 +58,19 @@ public class AuthRepository {
                 });
     }
 
-    // --- הרשמה במייל (Register) ---
+    /**
+     * Register with email , name and password
+     * @param email - email
+     * @param password - password
+     * @param nameInput - nameInput
+     */
     public void register(String email, String password, String nameInput) {
-        // 1. קביעת השם (אם ריק - לוקחים מהמייל)
-        String finalName;
-        if (nameInput == null || nameInput.isEmpty()) {
-            int index = email.indexOf('@');
-            if (index != -1) finalName = email.substring(0, index);
-            else finalName = email;
-        } else {
-            finalName = nameInput;
-        }
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            saveUserToFirestore(firebaseUser, finalName);
+                            saveUserToFirestore(firebaseUser, nameInput);
                         }
                     } else {
                         userLiveData.postValue(null);
@@ -77,7 +78,10 @@ public class AuthRepository {
                 });
     }
 
-    // --- הרשמה בגוגל (SignUp with Google) ---
+    /**
+     * Register with Google
+     * @param idToken - the token from google
+     */
     public void signUpWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -115,13 +119,17 @@ public class AuthRepository {
                     }
                 });
     }
-    // --- שמירה ב-Firestore (פרטית) ---
+
+    /**
+     * save the user to firestore
+     * @param firebaseUser - the user that registered
+     * @param name - the name to save the user
+     */
     private void saveUserToFirestore(FirebaseUser firebaseUser, String name) {
         User user = new User(firebaseUser.getUid(), firebaseUser.getEmail(), name);
         db.collection("users").document(user.getUid())
                 .set(user, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    // רק אחרי השמירה המוצלחת אנחנו מעדכנים שהכל תקין
                     userLiveData.postValue(firebaseUser);
                     updateFcmToken(); //about notification
                 })
@@ -129,7 +137,10 @@ public class AuthRepository {
                     userLiveData.postValue(null);
                 });
     }
-    // פונקציה ששומרת את הטוקן של המכשיר הנוכחי ב-Firestore
+
+    /**
+     * we need the fcm token to send notifications
+     */
     private void updateFcmToken() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {

@@ -30,17 +30,17 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ProjectViewActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
-    private String currentProjectId; // משתנה לשמירת ה-ID הנוכחי
+    private String currentProjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_view_page);
 
-        // 1. קליטת ה-ID מהמסך הקודם (ChooseProjectActivity)
+        // take the ID from the intent
         currentProjectId = getIntent().getStringExtra("PROJECT_ID");
 
-        // בדיקת בטיחות - אם משום מה אין ID (נדיר), נחזיר אחורה
+        // we want to make sure we received the project id
         if (currentProjectId == null || currentProjectId.isEmpty()) {
             Toast.makeText(this, "Error: Project ID missing", Toast.LENGTH_SHORT).show();
             finish();
@@ -56,12 +56,12 @@ public class ProjectViewActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        // טעינת ה-HomeFragment כברירת מחדל
+        //the home fragment is the default one
         if (savedInstanceState == null) {
             loadFragment(new HomePageFragment());
         }
 
-        // --- תפריט תחתון ---
+        // the bottom nenu
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
@@ -84,7 +84,7 @@ public class ProjectViewActivity extends AppCompatActivity {
             return true;
         });
 
-        // --- תפריט צד ---
+        // Burger menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -116,19 +116,17 @@ public class ProjectViewActivity extends AppCompatActivity {
         });
     }
 
-    // פונקציה חכמה לטעינת פרגמנט + העברת ה-ID
+    // function to change fragment
     private void loadFragment(Fragment fragment) {
-        // יוצרים "מזוודה" (Bundle) ושמים בה את ה-ID
         Bundle args = new Bundle();
         args.putString("PROJECT_ID", currentProjectId);
-        fragment.setArguments(args); // מצמידים לפרגמנט
-
+        fragment.setArguments(args); // We send the project ID to the fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
     }
 
-    public void openDrawer() {
+    public void openDrawer() {// open the "burger menu"
         if (!drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.openDrawer(GravityCompat.END);
         }
@@ -153,16 +151,16 @@ public class ProjectViewActivity extends AppCompatActivity {
         }
     }
 
-    public void navigateToNewRequest() {
-        NewRequestFragment fragment = new NewRequestFragment();
-
-        Bundle args = new Bundle();
-        args.putString("PROJECT_ID", currentProjectId);
-        fragment.setArguments(args);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null) // מאפשר לחזור אחורה
-                .commit();
-    }
+//    public void navigateToNewRequest() {
+//        NewRequestFragment fragment = new NewRequestFragment();
+//
+//        Bundle args = new Bundle();
+//        args.putString("PROJECT_ID", currentProjectId);
+//        fragment.setArguments(args);
+//
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, fragment)
+//                .addToBackStack(null)
+//                .commit();
+//    }
 }

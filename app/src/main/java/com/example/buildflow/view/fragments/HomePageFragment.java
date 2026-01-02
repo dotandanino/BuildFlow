@@ -81,8 +81,7 @@ public class HomePageFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvActiveRequests);
         tvEmptyState = view.findViewById(R.id.tvEmptyState);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        // שימי לב: גם פה הוספנו את this::openRequestDetails כדי שהלחיצה תעבוד גם מהבית
+        // to see all the active request
         adapter = new MyRequestsAdapter(new ArrayList<>(), this::openRequestDetails);
         recyclerView.setAdapter(adapter);
 
@@ -94,8 +93,7 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    // הוספנו את הפונקציה הזו גם כאן כדי שאפשר יהיה לפתוח פרטים מדף הבית
-    private void openRequestDetails(ProjectRequest request) {
+    private void openRequestDetails(ProjectRequest request) {// to show the details of the request when we clicked on her
         RequestDetailsFragment detailsFragment = new RequestDetailsFragment();
 
         Bundle args = new Bundle();
@@ -128,9 +126,9 @@ public class HomePageFragment extends Fragment {
                         List<ProjectRequest> myTasks = new ArrayList<>();
 
                         for (ProjectRequest req : project.getRequests()) {
-                            // סינון כפול: גם שזה שייך לי וגם שזה לא סגור
+                            // we want to make sure both the request is active and this is the receiver
                             if (req.getReceiver() != null && req.getReceiver().equals(currentUserId)) {
-                                if (!"Closed".equals(req.getStatus())) { // הנה התיקון!
+                                if (!"Closed".equals(req.getStatus())) {
                                     myTasks.add(req);
                                 }
                             }

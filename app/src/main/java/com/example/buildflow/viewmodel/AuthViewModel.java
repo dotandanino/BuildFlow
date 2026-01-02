@@ -30,12 +30,10 @@ public class AuthViewModel extends AndroidViewModel {
         repository.loginWithGoogle(idToken);
     }
 
-    // --- הוספנו את זה להרשמה ---
     public void register(String email, String password, String name) {
         repository.register(email, password, name);
     }
 
-    // --- הוספנו את זה להרשמה בגוגל ---
     public void signUpWithGoogle(String idToken) {
         repository.signUpWithGoogle(idToken);
     }

@@ -135,13 +135,11 @@ public class NewRequestFragment extends Fragment {
         Button btnSubmit = view.findViewById(R.id.btnSubmit);
         btnSubmit.setOnClickListener(v -> submitRequest(view));
 
-        // כפתור שמירת טיוטה
         Button btnSaveDraft = view.findViewById(R.id.btnSaveDraft);
         if (btnSaveDraft != null) {
             btnSaveDraft.setOnClickListener(v -> saveDraft(view));
         }
 
-        // --- בדיקה אם הגענו במצב "עריכת טיוטה" ---
         if (getArguments() != null && getArguments().containsKey("DRAFT_DATA")) {
             String draftJson = getArguments().getString("DRAFT_DATA");
             restoreDraftFromData(view, draftJson);
@@ -160,10 +158,9 @@ public class NewRequestFragment extends Fragment {
                 .commit();
     }
 
-    // --- לוגיקת שליחה (בלי טיימר, רק בדיקת אינטרנט) ---
 
     private void submitRequest(View view) {
-        // 1. בדיקות תקינות
+        // check the user enter all the field he must
         if (selectedCategory.isEmpty()) {
             Toast.makeText(getContext(), "Please select a category", Toast.LENGTH_SHORT).show();
             return;
@@ -172,8 +169,7 @@ public class NewRequestFragment extends Fragment {
             Toast.makeText(getContext(), "Please select urgency level", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // 2. בדיקת אינטרנט
+        //check he have internet connection
         if (!isNetworkAvailable()) {
             new AlertDialog.Builder(getContext())
                     .setTitle("No Internet Connection")
@@ -184,24 +180,24 @@ public class NewRequestFragment extends Fragment {
             return;
         }
 
-        // 3. הצגת טעינה
+        //show loading
         ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Submitting Request...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // 4. העלאה ושמירה
+        //save and upload
         if (imageUri != null || imageBitmap != null) {
             uploadImageToStorage(url -> {
-                // הצלחה בהעלאת תמונה
+                // picture upload successfully
                 saveToFirestore(view, url, progressDialog);
             }, e -> {
-                // כישלון בהעלאת תמונה
+                // picture upload failed
                 progressDialog.dismiss();
                 Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
             });
         } else {
-            // אין תמונה
+            // if there is no picture
             saveToFirestore(view, null, progressDialog);
         }
     }
@@ -230,7 +226,7 @@ public class NewRequestFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> {
                     progressDialog.dismiss();
 
-                    // --- הצלחה! מוחקים את הטיוטה מהרשימה ---
+                    // if its draft we delete him
                     removeDraftFromList();
 
                     Toast.makeText(getContext(), "Request Created Successfully!", Toast.LENGTH_LONG).show();
@@ -248,7 +244,6 @@ public class NewRequestFragment extends Fragment {
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
-    // --- לוגיקת טיוטות (שמירה, עריכה, מחיקה) ---
 
     private void saveDraft(View view) {
         EditText etTitle = view.findViewById(R.id.etTitle);
@@ -257,7 +252,7 @@ public class NewRequestFragment extends Fragment {
         EditText etTime = view.findViewById(R.id.etTime);
         EditText etLocation = view.findViewById(R.id.etLocation);
 
-        // שמירת התמונה לוקאלית
+        // save the image locally
         String localImageUriString = null;
         if (imageUri != null) {
             localImageUriString = imageUri.toString();
@@ -277,12 +272,12 @@ public class NewRequestFragment extends Fragment {
                 localImageUriString
         );
 
-        // שימור ID אם קיים
+        // save the draft id
         if (loadedDraftId != null) {
             draftRequest.setRequestId(loadedDraftId);
         }
 
-        // טעינת הרשימה ועדכון
+        // update the list of drafts
         SharedPreferences prefs = requireContext().getSharedPreferences("ProjectDrafts", Context.MODE_PRIVATE);
         String jsonList = prefs.getString("all_drafts_" + currentProjectId, null);
         Gson gson = new Gson();
@@ -315,7 +310,7 @@ public class NewRequestFragment extends Fragment {
         Toast.makeText(getContext(), "Draft Saved!", Toast.LENGTH_SHORT).show();
     }
 
-    private void restoreDraftFromData(View view, String json) {
+    private void restoreDraftFromData(View view, String json) { // restore the draft from the data
         try {
             ProjectRequest draft = new Gson().fromJson(json, ProjectRequest.class);
             loadedDraftId = draft.getRequestId();

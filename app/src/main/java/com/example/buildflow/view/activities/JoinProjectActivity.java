@@ -57,7 +57,7 @@ public class JoinProjectActivity extends AppCompatActivity {
         String projectId = etProjectId.getText().toString().trim();
         String selectedRole = spinnerRole.getSelectedItem().toString();
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+        // make sure the user enter the project id he want to join
         if (projectId.isEmpty()) {
             Toast.makeText(this, "Please enter a Project ID", Toast.LENGTH_SHORT).show();
             return;

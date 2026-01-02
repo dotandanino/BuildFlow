@@ -38,26 +38,24 @@ public class SignUpActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 1. אתחול ה-ViewModel
+        // init the view model
         viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        // 2. האזנה לשינויים (Observer) - מה קורה כשיש הצלחה/כישלון
+        // observer to check if the user is registered
         viewModel.getUserLiveData().observe(this, firebaseUser -> {
             if (firebaseUser != null) {
-                // הצלחה! עוברים מסך
+                // successful registration
                 Toast.makeText(SignUpActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignUpActivity.this, ChooseProjectActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             } else {
-                // כישלון (ההודעה המדויקת תלויה במימוש, אפשר לשכלל את זה ב-ViewModel)
-                // כרגע זה פשוט לא יעבור מסך אם זה null
+                //the user failed to register
                 Toast.makeText(SignUpActivity.this, "Registered Failed!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 3. כפתורים
         findViewById(R.id.registerButton).setOnClickListener(v -> registerUser());
         findViewById(R.id.loginLinkButton).setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
@@ -71,17 +69,15 @@ public class SignUpActivity extends AppCompatActivity {
         String password = ((EditText) findViewById(R.id.passwordTextView)).getText().toString();
         String name = ((EditText) findViewById(R.id.nameTextView)).getText().toString();
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "נא למלא מייל וסיסמה", Toast.LENGTH_SHORT).show();
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
+            Toast.makeText(this, "You must enter email, password and name", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // שולחים ל-ViewModel (הוא כבר יטפל בלוגיקה של השם החסר)
         viewModel.register(email, password, name);
     }
 
     private void googleSignIn() {
-        // ... (קוד ה-Credential Manager נשאר אותו דבר כי הוא קשור ל-UI) ...
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(getString(R.string.default_web_client_id))
@@ -101,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                             try {
                                 GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(((CustomCredential) credential).getData());
 
-                                // --- הנה השינוי: שולחים ל-ViewModel! ---
+                               //send to view model
                                 viewModel.signUpWithGoogle(googleIdTokenCredential.getIdToken());
 
                             } catch (Exception e) {
@@ -112,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(GetCredentialException e) {
-                        Toast.makeText(SignUpActivity.this, "שגיאה: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUpActivity.this, "error  " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
         );

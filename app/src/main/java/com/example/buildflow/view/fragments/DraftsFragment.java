@@ -39,7 +39,6 @@ public class DraftsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // ודאי שיש לך את fragment_drafts בתיקיית layout
         return inflater.inflate(R.layout.fragment_drafts, container, false);
     }
 
@@ -64,7 +63,7 @@ public class DraftsFragment extends Fragment {
 
             @Override
             public void onDeleteClick(ProjectRequest draft, int position) {
-                // הצגת דיאלוג מחיקה
+                // show delete dialog
                 new AlertDialog.Builder(getContext())
                         .setTitle("Delete Draft")
                         .setMessage("Are you sure you want to delete this draft?")
@@ -93,14 +92,14 @@ public class DraftsFragment extends Fragment {
     }
 
     private void deleteDraft(int position) {
-        // 1. הסרה מהרשימה
+        // remove from the list
         draftsList.remove(position);
 
-        // 2. עדכון התצוגה
+        // update UI
         adapter.notifyItemRemoved(position);
         adapter.notifyItemRangeChanged(position, draftsList.size());
 
-        // 3. שמירה לזיכרון
+        // save to shared preferences
         SharedPreferences prefs = requireContext().getSharedPreferences("ProjectDrafts", Context.MODE_PRIVATE);
         String json = new Gson().toJson(draftsList);
         prefs.edit().putString("all_drafts_" + currentProjectId, json).apply();

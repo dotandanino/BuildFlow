@@ -16,10 +16,11 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
+    // when the phone got notification
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        // אם התקבלה הודעה, נקפיץ אותה למשתמש
+        // if we got message we will notify the user
         if (remoteMessage.getNotification() != null) {
             String title = remoteMessage.getNotification().getTitle();
             String body = remoteMessage.getNotification().getBody();
@@ -30,7 +31,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void showNotification(String title, String message) {
         String channelId = "task_notifications";
 
-        // לאן עוברים כשלוחצים על ההודעה?
+        // If the user ender from the notification we want to send him for this class
         Intent intent = new Intent(this, ProjectViewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
@@ -44,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // באנדרואיד חדש חייבים ליצור "ערוץ" להתראות
+        //  set notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId, "Task Notifications", NotificationManager.IMPORTANCE_HIGH);
             manager.createNotificationChannel(channel);

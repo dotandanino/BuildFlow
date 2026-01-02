@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProjectRepository {
-    private FirebaseFirestore db;
+    private FirebaseFirestore db; // Connection to Firestore database
     private MutableLiveData<Boolean> projectCreationLiveData;
 
     public ProjectRepository() {
@@ -17,27 +17,26 @@ public class ProjectRepository {
         return projectCreationLiveData;
     }
 
-    // הפונקציה ששומרת את הפרויקט ב-Firebase
+    /**
+     * create new project and save him to the database
+     * @param project - the project we want to create
+     */
     public void createNewProject(Project project) {
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        // בדיקה שהמשתמש קיים (שמרתי על הלוגיקה שלך)
+        // try to get the current user
         db.collection("users").document(currentUserId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // שמירת הפרויקט
-                        db.collection("projects").document(project.getId()) // שימי לב: Project צריך להחזיק את ה-ID שלו
+                        // save the project with his ID as name
+                        db.collection("projects").document(project.getId())
                                 .set(project)
                                 .addOnSuccessListener(aVoid -> {
-                                    // הצלחה!
                                     projectCreationLiveData.postValue(true);
                                 })
                                 .addOnFailureListener(e -> {
-                                    // כישלון בשמירה
                                     projectCreationLiveData.postValue(false);
                                 });
                     } else {
-                        // המשתמש לא נמצא
                         projectCreationLiveData.postValue(false);
                     }
                 })

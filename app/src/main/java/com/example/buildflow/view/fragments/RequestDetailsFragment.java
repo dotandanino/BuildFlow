@@ -37,15 +37,13 @@ public class RequestDetailsFragment extends Fragment {
     private FirebaseFirestore db;
 
     private Uri closingImageUri = null;
-    private ImageView ivDialogPreview; // משתנה כדי להציג את התמונה בתוך הדיאלוג
+    private ImageView ivDialogPreview;
 
-    // ה-Launcher לבחירת תמונה (השתנה קצת כדי לעדכן את התצוגה בדיאלוג)
     private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
                     closingImageUri = uri;
-                    // אם הדיאלוג פתוח ויש לנו גישה לתצוגה שלו -> נעדכן אותה
                     if (ivDialogPreview != null) {
                         ivDialogPreview.setVisibility(View.VISIBLE);
                         ivDialogPreview.setImageURI(uri);
@@ -76,7 +74,6 @@ public class RequestDetailsFragment extends Fragment {
         Button btnStartTask = view.findViewById(R.id.btnStartTask);
         Button btnCloseRequest = view.findViewById(R.id.btnCloseRequest);
 
-        // שאר רכיבי התצוגה...
         TextView tvTitle = view.findViewById(R.id.tvTitle);
         TextView tvCategory = view.findViewById(R.id.tvCategory);
         TextView tvStatus = view.findViewById(R.id.tvStatus);
@@ -126,12 +123,12 @@ public class RequestDetailsFragment extends Fragment {
 
         btnStartTask.setOnClickListener(v -> updateRequestStatus("In Progress", null, null));
 
-        // --- כאן פותחים את הדיאלוג החדש ---
+        // open the dialog to close the request
         btnCloseRequest.setOnClickListener(v -> showCustomCloseDialog());
     }
 
     private void showCustomCloseDialog() {
-        // 1. ניפוח העיצוב החדש
+        // a dialog to close project
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_close_request, null);
 
         AlertDialog dialog = new AlertDialog.Builder(getContext())
@@ -139,18 +136,14 @@ public class RequestDetailsFragment extends Fragment {
                 .setCancelable(true)
                 .create();
 
-        // 2. קישור לרכיבים בדיאלוג
         EditText etResolution = dialogView.findViewById(R.id.etResolution);
         Button btnAddPhoto = dialogView.findViewById(R.id.btnAddClosingPhoto);
         Button btnConfirm = dialogView.findViewById(R.id.btnConfirmClose);
-        ivDialogPreview = dialogView.findViewById(R.id.ivClosingPreview); // שומרים במשתנה הגלובלי
+        ivDialogPreview = dialogView.findViewById(R.id.ivClosingPreview);
+        closingImageUri = null;
 
-        closingImageUri = null; // איפוס לפני התחלה
-
-        // 3. כפתור הוספת תמונה
         btnAddPhoto.setOnClickListener(v -> selectImageLauncher.launch("image/*"));
 
-        // 4. כפתור אישור סופי
         btnConfirm.setOnClickListener(v -> {
             String resolution = etResolution.getText().toString().trim();
             if (resolution.isEmpty()) {
@@ -158,7 +151,6 @@ public class RequestDetailsFragment extends Fragment {
                 return;
             }
 
-            // התחלת תהליך הסגירה
             dialog.dismiss();
             finalizeRequestClosure(resolution);
         });
@@ -168,23 +160,28 @@ public class RequestDetailsFragment extends Fragment {
 
     private void finalizeRequestClosure(String resolutionDesc) {
         if (closingImageUri != null) {
-            // אם יש תמונה - מעלים אותה קודם
+            // if there is picture we upload her
             Toast.makeText(getContext(), "Uploading image...", Toast.LENGTH_SHORT).show();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                     .child("closing_images/" + UUID.randomUUID().toString() + ".jpg");
 
             storageRef.putFile(closingImageUri)
                     .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        // יש URL -> שומרים הכל
                         updateRequestStatus("Closed", uri.toString(), resolutionDesc);
                     }))
                     .addOnFailureListener(e -> Toast.makeText(getContext(), "Image upload failed", Toast.LENGTH_SHORT).show());
         } else {
-            // אם אין תמונה - סוגרים ישר
+            // if there is no image we can close
             updateRequestStatus("Closed", null, resolutionDesc);
         }
     }
 
+    /**
+     * Updates the request status in the Firestore database.
+     * @param newStatus - the new status of the request
+     * @param closingImgUrl - the url of the closing image (if there is one)
+     * @param resolutionDesc - the description of the resolution (if there is one)
+     */
     private void updateRequestStatus(String newStatus, String closingImgUrl, String resolutionDesc) {
         if (projectId == null || requestId == null) return;
 
@@ -199,7 +196,6 @@ public class RequestDetailsFragment extends Fragment {
                             if (req.getRequestId().equals(requestId)) {
                                 req.setStatus(newStatus);
 
-                                // עדכון שדות הסגירה (אם יש)
                                 if (closingImgUrl != null) req.setClosingImageUrl(closingImgUrl);
                                 if (resolutionDesc != null) req.setResolutionDescription(resolutionDesc);
 
@@ -211,7 +207,7 @@ public class RequestDetailsFragment extends Fragment {
                         if (found) {
                             db.collection("projects").document(projectId).set(project)
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(getContext(), "Task Completed! 🎉", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Task Completed!", Toast.LENGTH_SHORT).show();
                                         getParentFragmentManager().popBackStack();
                                     })
                                     .addOnFailureListener(e -> Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show());

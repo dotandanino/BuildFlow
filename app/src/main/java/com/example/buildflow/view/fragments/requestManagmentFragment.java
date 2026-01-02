@@ -95,12 +95,9 @@ public class requestManagmentFragment extends Fragment {
         btnCreateRequest.setOnClickListener(v -> {
             NewRequestFragment newRequestFragment = new NewRequestFragment();
 
-            // --- התיקון: יצירת "מזוודה" עם ה-ID ---
             Bundle args = new Bundle();
             args.putString("PROJECT_ID", currentProjectId);
             newRequestFragment.setArguments(args);
-            // -------------------------------------
-
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, newRequestFragment)
                     .addToBackStack(null)
@@ -117,8 +114,7 @@ public class requestManagmentFragment extends Fragment {
             loadProjectRequests();
         }
     }
-
-    // פונקציה למשיכת נתונים מה-Firestore ומיון לרשימות
+    // load the requests from the database and send them to the list they belong to
     private void loadProjectRequests() {
         db.collection("projects").document(currentProjectId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -130,17 +126,12 @@ public class requestManagmentFragment extends Fragment {
 
                         for (ProjectRequest req : project.getRequests()) {
                             String status = req.getStatus();
-
-                            // מיון לפי סטטוס
                             if ("Closed".equals(status)) {
                                 closedList.add(req);
                             } else {
-                                // כל מה שלא סגור (Open, In Progress) הולך לרשימה הפתוחה
                                 openList.add(req);
                             }
                         }
-
-                        // עדכון האדפטרים
                         openAdapter.updateList(openList);
                         closedAdapter.updateList(closedList);
                     }
@@ -151,7 +142,7 @@ public class requestManagmentFragment extends Fragment {
                 });
     }
 
-    // פונקציה למעבר לפרטי בקשה (העתקנו מ-HomePageFragment)
+    // same like in home fragment
     private void openRequestDetails(ProjectRequest request) {
         RequestDetailsFragment detailsFragment = new RequestDetailsFragment();
 
@@ -186,13 +177,13 @@ public class requestManagmentFragment extends Fragment {
             case "open":
                 highlightTab(tabOpen);
                 viewOpen.setVisibility(View.VISIBLE);
-                // רענון הנתונים כשעוברים טאב (אופציונלי, אבל מומלץ)
+                // update the data when we change tab
                 if(currentProjectId != null) loadProjectRequests();
                 break;
             case "closed":
                 highlightTab(tabClosed);
                 viewClosed.setVisibility(View.VISIBLE);
-                // רענון הנתונים כשעוברים טאב
+                // update the data when we change tab
                 if(currentProjectId != null) loadProjectRequests();
                 break;
         }
