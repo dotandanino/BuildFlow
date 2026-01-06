@@ -19,8 +19,8 @@ import com.example.buildflow.view.fragments.NewRequestFragment;
 import com.example.buildflow.view.fragments.PrivacyFragment;
 import com.example.buildflow.R;
 import com.example.buildflow.view.fragments.HomePageFragment;
-import com.example.buildflow.view.fragments.allChatsFragment;
 import com.example.buildflow.view.fragments.profileFragment;
+import com.example.buildflow.view.fragments.AllChatsFragment; // הנה המחלקה החדשה שלנו
 import com.example.buildflow.view.fragments.requestManagmentFragment;
 import com.example.buildflow.view.fragments.searchProFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ProjectViewActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
-    private String currentProjectId;
+    private String currentProjectId; // משתנה לשמירת ה-ID הנוכחי
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class ProjectViewActivity extends AppCompatActivity {
         // take the ID from the intent
         currentProjectId = getIntent().getStringExtra("PROJECT_ID");
 
-        // we want to make sure we received the project id
+        //  take the ID from the intent
         if (currentProjectId == null || currentProjectId.isEmpty()) {
             Toast.makeText(this, "Error: Project ID missing", Toast.LENGTH_SHORT).show();
             finish();
@@ -72,9 +72,11 @@ public class ProjectViewActivity extends AppCompatActivity {
                 selectedFragment = new searchProFragment();
             } else if (id == R.id.nav_request) {
                 selectedFragment = new NewRequestFragment();
-            } else if (id == R.id.nav_chats) {
-                selectedFragment = new allChatsFragment();
-            } else if (id == R.id.nav_profile) {
+            }
+            else if (id == R.id.nav_chats) {
+                selectedFragment = new AllChatsFragment();
+            }
+            else if (id == R.id.nav_profile) {
                 selectedFragment = new profileFragment();
             }
 
@@ -120,7 +122,8 @@ public class ProjectViewActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         Bundle args = new Bundle();
         args.putString("PROJECT_ID", currentProjectId);
-        fragment.setArguments(args); // We send the project ID to the fragment
+        fragment.setArguments(args); // We send the project ID to the fragment// מצמידים לפרגמנט
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
@@ -151,16 +154,16 @@ public class ProjectViewActivity extends AppCompatActivity {
         }
     }
 
-//    public void navigateToNewRequest() {
-//        NewRequestFragment fragment = new NewRequestFragment();
-//
-//        Bundle args = new Bundle();
-//        args.putString("PROJECT_ID", currentProjectId);
-//        fragment.setArguments(args);
-//
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, fragment)
-//                .addToBackStack(null)
-//                .commit();
-//    }
+    public void navigateToNewRequest() {
+        NewRequestFragment fragment = new NewRequestFragment();
+
+        Bundle args = new Bundle();
+        args.putString("PROJECT_ID", currentProjectId);
+        fragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null) // מאפשר לחזור אחורה
+                .commit();
+    }
 }

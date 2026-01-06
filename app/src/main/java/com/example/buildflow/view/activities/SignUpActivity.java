@@ -97,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                             try {
                                 GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(((CustomCredential) credential).getData());
 
-                               //send to view model
+                                //send to view model
                                 viewModel.signUpWithGoogle(googleIdTokenCredential.getIdToken());
 
                             } catch (Exception e) {

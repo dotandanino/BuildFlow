@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DividerWithText">
+        <![CDATA[<item name="android:layout_width">match_parent</item> <item name="android:layout_height">wrap_content</item> <item name="android:layout_marginTop">8dp</item> <item name="android:layout_marginBottom">8dp</item> <item name="android:gravity">center_vertical</item> <item name="android:textColor">@android:color/darker_gray</item> <item name="android:textSize">14sp</item>]]></style>
+</resources>

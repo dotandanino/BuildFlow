@@ -6,10 +6,13 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -33,12 +36,16 @@
         <activity
             android:name=".view.activities.CreateNewProjectActivity"
             android:exported="false" />
+
         <activity
             android:name=".view.activities.ProjectViewActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".view.activities.ChooseProjectActivity"
             android:exported="false" />
+
         <activity
             android:name=".view.activities.LoginActivity"
             android:exported="true">
@@ -47,6 +54,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".service.MyFirebaseMessagingService"
             android:exported="false">

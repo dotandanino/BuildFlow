@@ -99,7 +99,7 @@ public class AuthRepository {
                                             String finalName = user.getDisplayName();
                                             String email = user.getEmail(); // הנה הקריאה מהמייל שביקשת
 
-                                             if (finalName == null || finalName.isEmpty()) {
+                                            if (finalName == null || finalName.isEmpty()) {
                                                 if (email != null && email.contains("@")) {
                                                     finalName = email.substring(0, email.indexOf('@'));
                                                 } else {
