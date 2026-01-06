@@ -12,20 +12,25 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.buildflow.R;
+import com.example.buildflow.view.fragments.AllChatsFragment;
 import com.example.buildflow.view.fragments.DraftsFragment;
-import com.example.buildflow.view.fragments.SettingsFragment;
 import com.example.buildflow.view.fragments.HelpFragment;
+import com.example.buildflow.view.fragments.HomePageFragment;
 import com.example.buildflow.view.fragments.NewRequestFragment;
 import com.example.buildflow.view.fragments.PrivacyFragment;
-import com.example.buildflow.R;
-import com.example.buildflow.view.fragments.HomePageFragment;
+import com.example.buildflow.view.fragments.SettingsFragment;
 import com.example.buildflow.view.fragments.profileFragment;
-import com.example.buildflow.view.fragments.AllChatsFragment; // הנה המחלקה החדשה שלנו
 import com.example.buildflow.view.fragments.requestManagmentFragment;
 import com.example.buildflow.view.fragments.searchProFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ProjectViewActivity extends AppCompatActivity {
 
@@ -37,10 +42,14 @@ public class ProjectViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_view_page);
 
+        // 1. הפעלת מערכת הסטטוס (מחובר/מנותק)
+        // חשוב מאוד לקרוא לפונקציה הזו מיד בהתחלה!
+        setupPresenceSystem();
+
         // take the ID from the intent
         currentProjectId = getIntent().getStringExtra("PROJECT_ID");
 
-        //  take the ID from the intent
+        // Check if ID exists
         if (currentProjectId == null || currentProjectId.isEmpty()) {
             Toast.makeText(this, "Error: Project ID missing", Toast.LENGTH_SHORT).show();
             finish();
@@ -61,7 +70,7 @@ public class ProjectViewActivity extends AppCompatActivity {
             loadFragment(new HomePageFragment());
         }
 
-        // the bottom nenu
+        // the bottom menu
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
@@ -72,11 +81,9 @@ public class ProjectViewActivity extends AppCompatActivity {
                 selectedFragment = new searchProFragment();
             } else if (id == R.id.nav_request) {
                 selectedFragment = new NewRequestFragment();
-            }
-            else if (id == R.id.nav_chats) {
+            } else if (id == R.id.nav_chats) {
                 selectedFragment = new AllChatsFragment();
-            }
-            else if (id == R.id.nav_profile) {
+            } else if (id == R.id.nav_profile) {
                 selectedFragment = new profileFragment();
             }
 
@@ -106,8 +113,6 @@ public class ProjectViewActivity extends AppCompatActivity {
                     selectedFragment = new DraftsFragment();
                 }
 
-
-
                 if (selectedFragment != null) {
                     loadFragment(selectedFragment);
                 }
@@ -122,20 +127,26 @@ public class ProjectViewActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         Bundle args = new Bundle();
         args.putString("PROJECT_ID", currentProjectId);
-        fragment.setArguments(args); // We send the project ID to the fragment// מצמידים לפרגמנט
+        fragment.setArguments(args); // We send the project ID to the fragment
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
     }
 
-    public void openDrawer() {// open the "burger menu"
+    public void openDrawer() { // open the "burger menu"
         if (!drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.openDrawer(GravityCompat.END);
         }
     }
 
     private void logoutUser() {
+        // לפני שמתנתקים - מעדכנים שאנחנו Offline ידנית (ליתר ביטחון)
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+        if (currentUserId != null) {
+            FirebaseDatabase.getInstance().getReference("status/" + currentUserId).setValue("offline");
+        }
+
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -165,5 +176,35 @@ public class ProjectViewActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null) // מאפשר לחזור אחורה
                 .commit();
+    }
+
+    // --- הפונקציה שמנהלת את הסטטוס מחובר/מנותק ---
+    private void setupPresenceSystem() {
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+        if (currentUserId == null) return;
+
+        // 1. חיבור למסד הנתונים
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myStatusRef = database.getReference("status/" + currentUserId);
+        DatabaseReference connectedRef = database.getReference(".info/connected");
+
+        // 2. האזנה לחיבור לרשת
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
+                if (connected) {
+                    // א. ברגע שאנחנו מחוברים -> תכתוב "online"
+                    myStatusRef.setValue("online");
+
+                    // ב. תכין פקודה מראש: "אם אני מתנתק פתאום -> תכתוב offline"
+                    myStatusRef.onDisconnect().setValue("offline");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }

@@ -14,6 +14,7 @@ credentialsPlayServicesAuth = "1.5.0"
 googleid = "1.1.1"
 firebaseFirestore = "26.0.2"
 firebaseMessaging = "25.0.1"
+firebaseDatabase = "22.0.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -29,6 +30,7 @@ credentials-play-services-auth = { group = "androidx.credentials", name = "crede
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

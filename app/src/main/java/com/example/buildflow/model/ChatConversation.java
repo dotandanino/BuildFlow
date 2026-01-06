@@ -8,6 +8,9 @@ public class ChatConversation {
     private String time;
     private int unreadCount;
     private boolean isOnline;
+    public ChatConversation() {
+        // Default constructor required for Firebase
+    }
 
     public ChatConversation(String id, String name, String role, String lastMessage, String time, int unreadCount, boolean isOnline) {
         this.id = id;
@@ -26,4 +29,6 @@ public class ChatConversation {
     public String getTime() { return time; }
     public int getUnreadCount() { return unreadCount; }
     public boolean isOnline() { return isOnline; }
+    public String getId() { return id; }
+
 }

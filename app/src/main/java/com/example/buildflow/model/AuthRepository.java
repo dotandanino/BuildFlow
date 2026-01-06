@@ -138,9 +138,7 @@ public class AuthRepository {
                 });
     }
 
-    /**
-     * we need the fcm token to send notifications
-     */
+
     private void updateFcmToken() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
