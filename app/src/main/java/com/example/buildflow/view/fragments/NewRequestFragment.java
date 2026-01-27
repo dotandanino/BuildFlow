@@ -160,16 +160,65 @@ public class NewRequestFragment extends Fragment {
 
 
     private void submitRequest(View view) {
-        // check the user enter all the field he must
+        // 1. קודם כל נתפוס את כל השדות מהמסך כדי לבדוק אותם
+        EditText etTitle = view.findViewById(R.id.etTitle);
+        EditText etLocation = view.findViewById(R.id.etLocation);
+        EditText etDate = view.findViewById(R.id.etDate);
+        EditText etTime = view.findViewById(R.id.etTime);
+
+        // נמיר למחרוזות וננקה רווחים מיותרים (trim)
+        String title = etTitle.getText().toString().trim();
+        String location = etLocation.getText().toString().trim();
+        String date = etDate.getText().toString().trim();
+        String time = etTime.getText().toString().trim();
+
+        // --- שלב הבדיקות (Validations) ---
+
+        // 1. בדיקת כותרת (Title)
+        if (title.isEmpty()) {
+            etTitle.setError("Title is required"); // מסמן באדום את השדה
+            etTitle.requestFocus(); // מקפיץ את המקלדת לשם
+            return;
+        }
+
+        // 2. בדיקת קטגוריה (Category)
         if (selectedCategory.isEmpty()) {
             Toast.makeText(getContext(), "Please select a category", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // 3. בדיקת דחיפות (Urgency)
         if (selectedUrgency.isEmpty()) {
             Toast.makeText(getContext(), "Please select urgency level", Toast.LENGTH_SHORT).show();
             return;
         }
-        //check he have internet connection
+
+        // 4. בדיקת אחראי (Assignee)
+        if (selectedAssigneeUid.isEmpty()) {
+            // בגלל שזה Dropdown, נשתמש ב-Toast ולא ב-setError
+            Toast.makeText(getContext(), "Please select an assignee member", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 5. בדיקת מיקום (Location)
+        if (location.isEmpty()) {
+            etLocation.setError("Location is required");
+            return;
+        }
+
+        // 6. בדיקת תאריך ושעה (Date & Time)
+        if (date.isEmpty()) {
+            etDate.setError("Date is required");
+            return;
+        }
+        if (time.isEmpty()) {
+            etTime.setError("Time is required");
+            return;
+        }
+
+        // --- סיום בדיקות: אם הגענו לפה, הכל תקין! ---
+
+        // בדיקת אינטרנט
         if (!isNetworkAvailable()) {
             new AlertDialog.Builder(getContext())
                     .setTitle("No Internet Connection")
@@ -180,24 +229,21 @@ public class NewRequestFragment extends Fragment {
             return;
         }
 
-        //show loading
+        // הצגת טעינה
         ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Submitting Request...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        //save and upload
+        // העלאת תמונה ושמירה
         if (imageUri != null || imageBitmap != null) {
             uploadImageToStorage(url -> {
-                // picture upload successfully
                 saveToFirestore(view, url, progressDialog);
             }, e -> {
-                // picture upload failed
                 progressDialog.dismiss();
                 Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
             });
         } else {
-            // if there is no picture
             saveToFirestore(view, null, progressDialog);
         }
     }

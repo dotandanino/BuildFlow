@@ -42,8 +42,6 @@ public class ProjectViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_view_page);
 
-        // 1. הפעלת מערכת הסטטוס (מחובר/מנותק)
-        // חשוב מאוד לקרוא לפונקציה הזו מיד בהתחלה!
         setupPresenceSystem();
 
         // take the ID from the intent
@@ -174,7 +172,7 @@ public class ProjectViewActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null) // מאפשר לחזור אחורה
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -194,10 +192,8 @@ public class ProjectViewActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean connected = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
                 if (connected) {
-                    // א. ברגע שאנחנו מחוברים -> תכתוב "online"
                     myStatusRef.setValue("online");
 
-                    // ב. תכין פקודה מראש: "אם אני מתנתק פתאום -> תכתוב offline"
                     myStatusRef.onDisconnect().setValue("offline");
                 }
             }
