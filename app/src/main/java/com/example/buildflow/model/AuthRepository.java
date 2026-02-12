@@ -97,7 +97,7 @@ public class AuthRepository {
                                         } else {
                                             // --- משתמש חדש: יצירת שם חכם ---
                                             String finalName = user.getDisplayName();
-                                            String email = user.getEmail(); // הנה הקריאה מהמייל שביקשת
+                                            String email = user.getEmail();
 
                                             if (finalName == null || finalName.isEmpty()) {
                                                 if (email != null && email.contains("@")) {
