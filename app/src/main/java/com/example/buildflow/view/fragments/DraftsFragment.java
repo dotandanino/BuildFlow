@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buildflow.R;
 import com.example.buildflow.model.ProjectRequest;
+import com.example.buildflow.view.activities.ProjectViewActivity;
 import com.example.buildflow.view.adapters.DraftsAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,6 +32,7 @@ public class DraftsFragment extends Fragment {
     private String currentProjectId;
     private RecyclerView rvDrafts;
     private DraftsAdapter adapter;
+    private ImageButton btnMenuSettings;
     private List<ProjectRequest> draftsList = new ArrayList<>();
 
     public DraftsFragment() {
@@ -73,6 +75,13 @@ public class DraftsFragment extends Fragment {
             }
         });
         rvDrafts.setAdapter(adapter);
+        btnMenuSettings = view.findViewById(R.id.btnMenu);
+
+        btnMenuSettings.setOnClickListener(v -> {
+            if (getActivity() instanceof ProjectViewActivity) {
+                ((ProjectViewActivity) getActivity()).openDrawer();
+            }
+        });
 
         ImageButton btnBack = view.findViewById(R.id.btnBack);
         if (btnBack != null) {

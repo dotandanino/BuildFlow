@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.buildflow.model.DatabaseSeeder;
 import com.example.buildflow.view.adapters.ProjectsAdapter;
 import com.example.buildflow.R;
 import com.example.buildflow.model.Project;
@@ -31,14 +32,13 @@ public class ChooseProjectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_choose_project);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
+        // TODO: למחוק אחרי הרצה אחת!
+        findViewById(R.id.imgLogo).setOnClickListener(v -> {
+            DatabaseSeeder.seedProfessionals();
+            Toast.makeText(this, "Seeding professionals... Check Firebase!", Toast.LENGTH_SHORT).show();
+        });
         findViewById(R.id.logOutButton).setOnClickListener(v -> signOutUser());
         findViewById(R.id.btnAddProject).setOnClickListener(v -> startActivity(new Intent(this, CreateNewProjectActivity.class)));
 
@@ -64,6 +64,10 @@ public class ChooseProjectActivity extends AppCompatActivity {
         loadUserProjects();
 
         findViewById(R.id.joinProject).setOnClickListener(v -> startActivity(new Intent(this, JoinProjectActivity.class)));
+
+        findViewById(R.id.cardRegisterPro).setOnClickListener(v -> {
+            startActivity(new Intent(this, RegisterProActivity.class));
+        });
 
         // we ask for notification permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {

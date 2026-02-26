@@ -7,11 +7,12 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BuildFlow2"
         tools:targetApi="31">
-
+        <activity
+            android:name=".view.activities.RegisterProActivity"
+            android:exported="false" />
         <activity
             android:name=".view.activities.SignUpActivity"
             android:exported="false" />
@@ -36,21 +39,19 @@
         <activity
             android:name=".view.activities.CreateNewProjectActivity"
             android:exported="false" />
-
         <activity
             android:name=".view.activities.ProjectViewActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".view.activities.ChooseProjectActivity"
             android:exported="false" />
-
         <activity
             android:name=".view.activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

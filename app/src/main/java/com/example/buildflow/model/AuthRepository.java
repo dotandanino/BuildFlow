@@ -1,5 +1,7 @@
 package com.example.buildflow.model;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,11 +70,14 @@ public class AuthRepository {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d("AuthRepo", "Step 1: Auth successful! Moving to Firestore...");
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             saveUserToFirestore(firebaseUser, nameInput);
                         }
                     } else {
+                        // כאן נדפיס למה ההרשמה נכשלה!
+                        Log.e("AuthRepo", "CRASH in Auth: " + task.getException().getMessage());
                         userLiveData.postValue(null);
                     }
                 });
@@ -97,7 +102,7 @@ public class AuthRepository {
                                         } else {
                                             // --- משתמש חדש: יצירת שם חכם ---
                                             String finalName = user.getDisplayName();
-                                            String email = user.getEmail(); // הנה הקריאה מהמייל שביקשת
+                                            String email = user.getEmail();
 
                                             if (finalName == null || finalName.isEmpty()) {
                                                 if (email != null && email.contains("@")) {
@@ -127,13 +132,19 @@ public class AuthRepository {
      */
     private void saveUserToFirestore(FirebaseUser firebaseUser, String name) {
         User user = new User(firebaseUser.getUid(), firebaseUser.getEmail(), name);
+        if (firebaseUser.getPhotoUrl() != null) {
+            user.setProfileImageUrl(firebaseUser.getPhotoUrl().toString());
+        }
         db.collection("users").document(user.getUid())
                 .set(user, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
+                    Log.d("AuthRepo", "Step 2: User saved to Firestore successfully!");
                     userLiveData.postValue(firebaseUser);
                     updateFcmToken(); //about notification
                 })
                 .addOnFailureListener(e -> {
+                    // כאן נדפיס אם ה-Firestore חסם אותנו!
+                    Log.e("AuthRepo", "CRASH in Firestore: " + e.getMessage());
                     userLiveData.postValue(null);
                 });
     }

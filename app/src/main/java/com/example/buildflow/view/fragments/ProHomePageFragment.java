@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePageFragment extends Fragment {
+public class ProHomePageFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TextView tvEmptyState;
@@ -35,14 +35,14 @@ public class HomePageFragment extends Fragment {
     private String currentUserId;
     private String currentProjectId;
 
-    public HomePageFragment() {
+    public ProHomePageFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        return inflater.inflate(R.layout.fragment_pro_home_page, container, false);
     }
 
     @Override

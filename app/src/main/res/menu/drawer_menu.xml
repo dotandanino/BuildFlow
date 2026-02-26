@@ -14,23 +14,15 @@
         android:id="@+id/nav_my_drafts"
         android:icon="@drawable/ic_draft"
         android:title="My Drafts" />
+    <item
+        android:id="@+id/nav_my_projects"
+        android:icon="@drawable/ic_projects"
+        android:title="My Projects" />
 
     <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/ic_settings"
         android:title="Settings" />
-
-
-    <item
-        android:id="@+id/nav_help"
-        android:icon="@drawable/ic_help"
-        android:title="Help &amp; Support" />
-
-    <item
-        android:id="@+id/nav_privacy"
-        android:icon="@drawable/ic_security"
-        android:title="Privacy Policy" />
-
 
 
 </menu>
