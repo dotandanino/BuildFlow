@@ -1,5 +1,8 @@
 package com.example.buildflow.model;
 
+/**
+ * a class for the chat conversation
+ */
 public class ChatConversation {
     private String id;
     private String name;

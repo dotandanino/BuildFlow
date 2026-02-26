@@ -76,7 +76,7 @@ public class AuthRepository {
                             saveUserToFirestore(firebaseUser, nameInput);
                         }
                     } else {
-                        // כאן נדפיס למה ההרשמה נכשלה!
+                        // in case there was a failure we can print why
                         Log.e("AuthRepo", "CRASH in Auth: " + task.getException().getMessage());
                         userLiveData.postValue(null);
                     }
@@ -100,7 +100,7 @@ public class AuthRepository {
                                             updateFcmToken();
                                             userLiveData.postValue(user);
                                         } else {
-                                            // --- משתמש חדש: יצירת שם חכם ---
+                                            // if this is a new user that registered with his email we will extract the
                                             String finalName = user.getDisplayName();
                                             String email = user.getEmail();
 
@@ -143,7 +143,7 @@ public class AuthRepository {
                     updateFcmToken(); //about notification
                 })
                 .addOnFailureListener(e -> {
-                    // כאן נדפיס אם ה-Firestore חסם אותנו!
+                    // if the firestore blocked us we will print the error.
                     Log.e("AuthRepo", "CRASH in Firestore: " + e.getMessage());
                     userLiveData.postValue(null);
                 });
@@ -157,7 +157,7 @@ public class AuthRepository {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
                             String token = task.getResult();
-                            // עדכון השדה fcmToken במסמך של המשתמש
+                            // we will update the FCM token to make sure we will notify the correct phone
                             db.collection("users").document(currentUser.getUid())
                                     .update("fcmToken", token);
                         }

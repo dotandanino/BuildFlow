@@ -34,11 +34,11 @@ public class ChooseProjectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_choose_project);
-        // TODO: למחוק אחרי הרצה אחת!
-        findViewById(R.id.imgLogo).setOnClickListener(v -> {
-            DatabaseSeeder.seedProfessionals();
-            Toast.makeText(this, "Seeding professionals... Check Firebase!", Toast.LENGTH_SHORT).show();
-        });
+        // was just for creating the professional data easily.
+//        findViewById(R.id.imgLogo).setOnClickListener(v -> {
+//            DatabaseSeeder.seedProfessionals();
+//            Toast.makeText(this, "Seeding professionals... Check Firebase!", Toast.LENGTH_SHORT).show();
+//        });
         findViewById(R.id.logOutButton).setOnClickListener(v -> signOutUser());
         findViewById(R.id.btnAddProject).setOnClickListener(v -> startActivity(new Intent(this, CreateNewProjectActivity.class)));
 

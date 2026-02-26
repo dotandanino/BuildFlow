@@ -28,7 +28,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class requestManagmentFragment extends Fragment {
+public class
+requestManagmentFragment extends Fragment {
+
 
     private TextView tabNew, tabOpen, tabClosed;
     private LinearLayout viewNew, viewOpen, viewClosed;
