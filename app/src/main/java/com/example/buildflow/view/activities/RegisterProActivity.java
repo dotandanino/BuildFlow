@@ -202,7 +202,7 @@ public class RegisterProActivity extends AppCompatActivity {
         newPro.setAvatarUrl(avatarUrl);
 
         // נתוני ברירת מחדל
-        newPro.setRating(5.0);
+        newPro.setRating(0);
         newPro.setReviewsCount(0);
         newPro.setTotalJobs(0);
         newPro.setVerified(false);
