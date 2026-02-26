@@ -32,18 +32,18 @@ public class ChatRepository {
         db = FirebaseFirestore.getInstance();
     }
 
-    // --- יצירת ID ייחודי לשיחה (user1_user2) ---
+    // --- create a special ID (user1_user2) ---
     public String generateChatId(String userId1, String userId2) {
         List<String> ids = Arrays.asList(userId1, userId2);
         Collections.sort(ids);
         return ids.get(0) + "_" + ids.get(1);
     }
 
-    // --- שליחת הודעה ---
+    // --- send a massage ---
     public void sendMessage(String projectId, String chatId, ChatMessage message, String chatName, String chatRole) {
         WriteBatch batch = db.batch();
 
-        // 1. שמירת ההודעה באוסף messages
+        // 1. save the massege in the collection of messages
         CollectionReference messagesRef = db.collection("projects").document(projectId)
                 .collection("chats").document(chatId).collection("messages");
 
