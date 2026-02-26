@@ -24,7 +24,6 @@
             android:orientation="vertical"
             android:paddingBottom="80dp">
 
-            <!-- HEADER SECTION -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,10 +70,8 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- SECTION 1: MY EXISTING PROJECTS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,7 +100,6 @@
 
             </LinearLayout>
 
-            <!-- SECTION 2: JOIN PROJECT -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,12 +119,12 @@
                     app:drawableTint="@color/dark_blue" />
 
                 <LinearLayout
+                    android:id="@+id/joinProject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/bg_dashed_border"
                     android:gravity="center"
-                    android:id="@+id/joinProject"
                     android:orientation="vertical"
                     android:padding="24dp">
 
@@ -157,7 +153,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- SECTION 3: CREATE NEW PROJECT -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -177,6 +172,7 @@
                     app:drawableTint="@color/white" />
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnAddProject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -191,7 +187,6 @@
                         android:padding="24dp">
 
                         <FrameLayout
-                            android:id="@+id/btnAddProject"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_circle_white_transparent">
@@ -230,30 +225,105 @@
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-                <LinearLayout
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="32dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="Professional Profile"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@android:drawable/ic_menu_myplaces"
+                    app:drawableTint="@color/orange" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardRegisterPro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="24dp"
-                    android:paddingTop="40dp"
-                    android:paddingBottom="24dp">
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/logOutButton"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:text="Log Out"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"
-                        app:backgroundTint="#EF5350"
-                        app:cornerRadius="12dp"
-                        app:elevation="4dp"
-                        app:icon="@android:drawable/ic_lock_power_off"
-                        app:iconGravity="textStart"
-                        app:iconTint="#FFFFFF"
-                        app:iconPadding="12dp"/>
+                        android:layout_height="wrap_content"
+                        android:background="@color/orange"
+                        android:gravity="center_vertical"
+                        android:padding="24dp">
 
-                </LinearLayout>
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_circle_white_transparent">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_edit"
+                                app:tint="@color/white" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Register as an Expert"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:alpha="0.9"
+                                android:text="Offer your services to others"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="40dp"
+                android:paddingBottom="24dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logOutButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Log Out"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#EF5350"
+                    app:cornerRadius="12dp"
+                    app:elevation="4dp"
+                    app:icon="@android:drawable/ic_lock_power_off"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF"
+                    app:iconPadding="12dp"/>
+
             </LinearLayout>
 
         </LinearLayout>

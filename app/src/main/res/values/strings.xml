@@ -11,7 +11,7 @@
 
     <string-array name="project_role">
         <item>Other</item>
-        <item>Owner</item>
+        <item>Plumber</item>
         <item>Contractor</item>
         <item>Supervisor</item>
         <item>Electrician</item>

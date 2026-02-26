@@ -18,6 +18,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_max="300dp">
 
+        <ImageView
+            android:id="@+id/ivMessageImageReceived"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="4dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="#E0E0E0"
+            android:clipToOutline="true" />
+
         <TextView
             android:id="@+id/tvMessageReceived"
             android:layout_width="wrap_content"
@@ -48,6 +58,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_max="300dp">
+
+        <ImageView
+            android:id="@+id/ivMessageImageSent"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="4dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="#E0E0E0"
+            android:clipToOutline="true" />
 
         <TextView
             android:id="@+id/tvMessageSent"

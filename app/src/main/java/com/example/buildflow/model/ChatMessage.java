@@ -12,6 +12,28 @@ public class ChatMessage {
     private String senderName;
     private String content;
     private long timestamp;
+    private String messageType; // "text", "image", or "file"
+    private String mediaUrl;    // הקישור ל-Firebase Storage
+
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+
+    private String fileName = null;
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
 
     public ChatMessage() {
     }

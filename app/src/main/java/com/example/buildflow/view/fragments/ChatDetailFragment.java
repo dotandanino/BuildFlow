@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +33,10 @@ import com.google.firebase.database.ValueEventListener; // הוספנו
 
 import java.util.ArrayList;
 import java.util.UUID;
+import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.provider.OpenableColumns;
+import android.net.Uri;
 
 public class ChatDetailFragment extends Fragment {
 
@@ -49,12 +55,35 @@ public class ChatDetailFragment extends Fragment {
     private String projectId;
     private String chatId;
 
+    private ImageButton btnImage, btnAttach;
+    private String originalRoleForUpload;
+
     // --- התיקון: הוספת המשתנה החסר ---
     private ValueEventListener presenceListener;
 
     public ChatDetailFragment() {
         // Required empty public constructor
     }
+
+    // פותח את הגלריה
+    private final ActivityResultLauncher<String> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            (Uri uri) -> { // <--- כאן התיקון: אמרנו לו במפורש שזה Uri
+                if (uri != null) {
+                    uploadAndSendMedia(uri, "image");
+                }
+            }
+    );
+
+    // פותח את סייר הקבצים
+    private final ActivityResultLauncher<String> pickFileLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            (Uri uri) -> { // <--- כאן התיקון: אמרנו לו במפורש שזה Uri
+                if (uri != null) {
+                    uploadAndSendMedia(uri, "file");
+                }
+            }
+    );
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,13 +109,21 @@ public class ChatDetailFragment extends Fragment {
             currentUserName = currentUser.getDisplayName();
         }
 
-        // 3. אתחול רכיבי UI (העברתי את זה למעלה כדי שנוכל להשתמש ב-tvHeaderRole מיד)
         tvHeaderName = view.findViewById(R.id.tvHeaderName);
         tvHeaderRole = view.findViewById(R.id.tvHeaderRole);
         btnBack = view.findViewById(R.id.btnBack);
         rvMessages = view.findViewById(R.id.rvMessages);
         etMessage = view.findViewById(R.id.etMessage);
         btnSend = view.findViewById(R.id.btnSend);
+
+        // מציאת הכפתורים (בנוסף למה שכבר יש לך)
+        btnImage = view.findViewById(R.id.btnImage);
+        btnAttach = view.findViewById(R.id.btnAttach);
+
+
+        // הגדרת לחיצות
+        btnImage.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
+        btnAttach.setOnClickListener(v -> pickFileLauncher.launch("*/*"));
 
         // 4. קבלת פרטים מהארגומנטים
         String originalRole = "Professional"; // ברירת מחדל
@@ -105,7 +142,7 @@ public class ChatDetailFragment extends Fragment {
             // יצירת מזהה השיחה
             chatId = viewModel.getChatId(currentUserId, receiverId);
         }
-
+        originalRoleForUpload = originalRole; // שמירת התפקיד למשתנה ברמת המחלקה
         // 5. אדפטר
         adapter = new MessagesAdapter(new ArrayList<>(), currentUserId);
         rvMessages.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -191,5 +228,45 @@ public class ChatDetailFragment extends Fragment {
             FirebaseDatabase.getInstance().getReference("status/" + receiverId)
                     .removeEventListener(presenceListener);
         }
+    }
+
+    private void uploadAndSendMedia(Uri uri, String type) {
+        android.widget.Toast.makeText(getContext(), "Uploading " + type + "...", android.widget.Toast.LENGTH_SHORT).show();
+
+        // מחלצים את שם הקובץ לפני ששולחים ל-ViewModel!
+        String fileName = getFileName(uri);
+
+        viewModel.uploadMediaAndSendMessage(
+                projectId,
+                chatId,
+                currentUserId,
+                receiverId,
+                currentUserName,
+                receiverName,
+                originalRoleForUpload,
+                uri,
+                type,
+                fileName // <--- העברנו את שם הקובץ
+        );
+    }
+
+    @SuppressLint("Range")
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result != null ? result : "Unknown File";
     }
 }

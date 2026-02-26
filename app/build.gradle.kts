@@ -64,4 +64,5 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.11.0")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 }
