@@ -70,7 +70,7 @@ public class ChatRepository {
         batch.commit();
     }
 
-    // --- האזנה להודעות בתוך צ'אט ---
+    // --- listen to messages in the chats ---
     public void listenToMessages(String projectId, String chatId, MutableLiveData<List<ChatMessage>> messagesLiveData) {
         db.collection("projects").document(projectId)
                 .collection("chats").document(chatId).collection("messages")
