@@ -20,7 +20,7 @@ public class ChatRepository {
     private final FirebaseFirestore db;
     private static ChatRepository instance;
 
-    // Singleton - מופע יחיד של המחלקה
+    // Singleton - the only show of the class
     public static ChatRepository getInstance() {
         if (instance == null) {
             instance = new ChatRepository();

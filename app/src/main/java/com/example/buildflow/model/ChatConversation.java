@@ -9,7 +9,7 @@ public class ChatConversation {
     private int unreadCount;
     private boolean isOnline;
     public ChatConversation() {
-        // Default constructor required for Firebase
+        // Default constructor required for Firebase.
     }
 
     public ChatConversation(String id, String name, String role, String lastMessage, String time, int unreadCount, boolean isOnline) {
@@ -22,7 +22,7 @@ public class ChatConversation {
         this.isOnline = isOnline;
     }
 
-    // Getters
+    //  Getters
     public String getName() { return name; }
     public String getRole() { return role; }
     public String getLastMessage() { return lastMessage; }
