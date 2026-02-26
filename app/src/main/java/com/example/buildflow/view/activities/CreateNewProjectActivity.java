@@ -14,6 +14,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class CreateNewProjectActivity extends AppCompatActivity {
 
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +47,19 @@ public class CreateNewProjectActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    /**
+     * function to make sure the next activity will be like in the correct color
+     */
     private void chooseConstructionProject() {
         Intent intent = new Intent(CreateNewProjectActivity.this, AddProjectActivity.class);
         intent.putExtra("TYPE","Construction");
         startActivity(intent);
         finish();
     }
-
+    /**
+     * function to make sure the next activity will be like in the correct color
+     */
     private void chooseRenovationProject() {
         Intent intent = new Intent(CreateNewProjectActivity.this, AddProjectActivity.class);
         intent.putExtra("TYPE","Renovation");
